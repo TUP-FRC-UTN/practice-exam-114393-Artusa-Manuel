@@ -11,11 +11,11 @@
       }
     </div>
     <div class="col-6">
-      @if (calculateTotal() > 1000) {
-      <h3>Total Con Descuento = {{calculateTotal()}}</h3>
-    }@else {
-      <h3>Total Sin descuento = {{calculateTotal()}}</h3>
-    }
+    
+    <h3>Total Con Descuento a partir de $1000 = {{realizarDescuento()}}</h3>
+    
+    <h3>Total Sin descuento = {{calculateTotal()}}</h3>
+    
     </div>
   </div>
     <div class="mb-4">

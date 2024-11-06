@@ -135,11 +135,14 @@ export class FormOrderComponent implements OnInit {
       return accumulatedTotal + (quantity * price);
     }, 0);
   
+    return parseFloat(total.toFixed(2))
+  }
+  realizarDescuento(){
+    let total = this.calculateTotal();
     if (total > 1000) {
       total -= total * 0.1;
     }
-  
-    return total;
+    return parseFloat(total.toFixed(2))
   }
   
 
@@ -158,7 +161,7 @@ export class FormOrderComponent implements OnInit {
         customerName: formValue.customerName,
         email: formValue.email,
         products: orderProducts,
-        total: this.calculateTotal(),
+        total: this.realizarDescuento(),
         orderCode: this.generateOrderCode(formValue.email),
         timestamp: new Date().toISOString(),
         
