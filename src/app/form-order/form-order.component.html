@@ -1,0 +1,127 @@
+<form [formGroup]="orderForm" (ngSubmit)="onSubmit()" class="p-4">
+  <button class="btn btn-primary" (click)="goLista()">Lista</button>
+  <div class="row">
+    <div class="col-6">
+      <label for="customerName" class="block mb-2">Customer Name</label>
+      <input id="customerName" 
+            formControlName="customerName" 
+            class="w-full p-2 border rounded">
+      @if (hasError('customerName', 'required')) {
+        <span class="text-red-500">Customer name is required</span>
+      }
+    </div>
+    <div class="col-6">
+      @if (calculateTotal() > 1000) {
+      <h3>Total Con Descuento = {{calculateTotal()}}</h3>
+    }@else {
+      <h3>Total Sin descuento = {{calculateTotal()}}</h3>
+    }
+    </div>
+  </div>
+    <div class="mb-4">
+      <label for="email" class="block mb-2">Email</label>
+      <input id="email" 
+            formControlName="email" 
+            type="email" 
+            class="w-full p-2 border rounded">
+      @if (hasError('email', 'required')) {
+        <span class="text-red-500">Email is required</span>
+      }
+      @if (hasError('email', 'email')) {
+        <span class="text-red-500">Please enter a valid email</span>
+      }
+      @if (hasError('email', 'emailLimitExceeded')) { 
+        <span class="text-red-500">You have exceeded the order limit for today</span>
+      }
+    </div>
+    
+  
+    <div formArrayName="products" class="mb-4">
+      <h3 class="text-xl font-bold mb-4">Products</h3>
+      
+      @for (productForm of products.controls; track $index) {
+        
+        <div [formGroupName]="$index" class="mb-4 p-4 border rounded">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              
+              <label [for]="'product-' + $index" class="block mb-2">Product</label>
+              <select [id]="'product-' + $index" 
+                      formControlName="productId" 
+                      (change)="onProductChanges($index)"
+                      class="w-full p-2 border rounded">
+                <option value="" disabled>Select a product</option>
+                @for (product of productsList; track product.id) {
+                  <option [value]="product.id">{{product.name}}</option>
+                }
+                
+              </select>
+              @if (hasProductError($index, 'productId', 'required')) {
+                <span class="text-red-500">Product selection is required</span>
+              }
+              @if (hasError( 'products', 'duplicateProducts')) {
+                <span class="text-red-500">duplicateProducts</span>
+              }
+              
+            </div>
+  
+            <div>
+              <label [for]="'quantity-' + $index" class="block mb-2">Quantity</label>
+              <input [id]="'quantity-' + $index" 
+                     formControlName="quantity" 
+                     type="number"
+                     class="w-full p-2 border rounded">
+              @if (hasProductError($index, 'quantity', 'required')) {
+                <span class="text-red-500">Quantity is required</span>
+              }
+              @if (hasProductError($index, 'quantity', 'min')) {
+                <span class="text-red-500">Quantity must be greater than 0</span>
+              }
+              @if (hasProductError($index, 'quantity', 'max')) {
+                <span class="text-red-500">Quantity cannot exceed available stock</span>
+              }
+            </div>
+  
+            <div>
+              <label [for]="'stock-' + $index" class="block mb-2">Stock</label>
+              <input [id]="'stock-' + $index" 
+                     formControlName="stock" 
+                     type="number" 
+                     
+                     class="w-full p-2 border rounded bg-gray-100">
+            </div>
+  
+            <div>
+              <label [for]="'price-' + $index" class="block mb-2">Price</label>
+              <input [id]="'price-' + $index" 
+                     formControlName="price" 
+                     type="number" 
+                     
+                     class="w-full p-2 border rounded bg-gray-100">
+            </div>
+          </div>
+  
+          <button type="button" 
+                  (click)="removeProduct($index)"
+                  class="mt-4 px-4 py-2 bg-red-500 text-white rounded">
+            Remove
+          </button>
+        </div>
+      }
+    </div>
+    
+  
+    <div class="flex gap-4">
+      <button type="button" 
+              (click)="addProducts()"
+              class="px-4 py-2 bg-blue-500 text-white rounded">
+        Add Product
+      </button>
+      <button type="submit"
+              class="px-4 py-2 bg-green-500 text-white rounded">
+        Submit Order
+      </button>
+      
+    </div>
+    
+  </form>
